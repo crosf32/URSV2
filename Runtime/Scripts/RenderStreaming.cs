@@ -121,7 +121,7 @@ namespace Unity.RenderStreaming
                 interval = signaling.Interval;
             }
             ISignaling _signaling = signaling ?? CreateSignaling(
-                signalingType, roomIdentifier, urlSignaling, interval, SynchronizationContext.Current);
+                signalingType, "basecode", urlSignaling, interval, SynchronizationContext.Current);
             RenderStreamingDependencies dependencies = new RenderStreamingDependencies
             {
                 config = _conf,

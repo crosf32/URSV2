@@ -52,6 +52,18 @@ namespace Unity.RenderStreaming
             audioSource.clip = null;
         }
 
+        public void MuteUnMute(bool muted)
+        {
+            if (muted)
+            {
+                audioSource.Pause();
+            }
+            else
+            {
+                audioSource.UnPause();
+            }
+        }
+        
         public void SetDeviceIndex(int index)
         {
             deviceIndex = index;

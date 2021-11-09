@@ -241,7 +241,7 @@ namespace Unity.RenderStreaming.Signaling
 
         private bool HTTPCreate()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{m_url}/signaling");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/");
             request.Method = "PUT";
             request.ContentType = "application/json";
             request.KeepAlive = false;
@@ -268,7 +268,7 @@ namespace Unity.RenderStreaming.Signaling
 
         private bool HTTPDelete()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{m_url}/signaling");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/");
             request.Method = "DELETE";
             request.ContentType = "application/json";
             request.KeepAlive = false;
@@ -304,7 +304,7 @@ namespace Unity.RenderStreaming.Signaling
         private bool HTTPConnect(string connectionId)
         {
             HttpWebRequest request =
-                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection");
+                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection/");
             request.Method = "PUT";
             request.ContentType = "application/json";
             request.Headers.Add("Session-Id", m_sessionId);
@@ -330,7 +330,7 @@ namespace Unity.RenderStreaming.Signaling
         private bool HTTPDisonnect(string connectionId)
         {
             HttpWebRequest request =
-                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection");
+                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection/");
             request.Method = "Delete";
             request.ContentType = "application/json";
             request.Headers.Add("Session-Id", m_sessionId);
@@ -355,7 +355,7 @@ namespace Unity.RenderStreaming.Signaling
         private bool HTTPGetConnections()
         {
             HttpWebRequest request =
-                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection");
+                (HttpWebRequest)WebRequest.Create($"{m_url}/signaling/connection/");
             request.Method = "GET";
             request.ContentType = "application/json";
             request.Headers.Add("Session-Id", m_sessionId);

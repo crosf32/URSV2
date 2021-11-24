@@ -8,7 +8,7 @@ namespace Unity.RenderStreaming
     {
         protected override MediaStreamTrack CreateTrack()
         {
-            return new AudioStreamTrack(audioSource);
+            return new AudioStreamTrack();
         }
     }
 }

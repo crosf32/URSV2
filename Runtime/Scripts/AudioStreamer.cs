@@ -9,22 +9,98 @@ namespace Unity.RenderStreaming
     /// </summary>
     public class AudioStreamer : AudioStreamBase
     {
-        private MediaStream m_audioStream;
+        [SerializeField, Tooltip("Play microphone input (Required)")]
+        protected AudioSource audioSource;
+        protected AudioStreamTrack track;
 
-        void OnDisable()
+        int _sampleRate = 0;
+
+        public AudioSource AudioSource
         {
-            WebRTC.Audio.Stop();
+            set
+            {
+                audioSource = value;
+                _sampleRate = audioSource.clip.samples;
+            }
+            get
+            {
+                return audioSource;
+            }
+        }
+
+        protected virtual void Awake()
+        {
+            if(audioSource != null && audioSource.clip != null)
+            {
+                _sampleRate = audioSource.clip.samples;
+            }
+            else
+            {
+                _sampleRate = AudioSettings.outputSampleRate;
+            }
+
+            OnStartedStream += _OnStartedStream;
+            OnStoppedStream += _OnStoppedStream;
+        }
+
+        void _OnStartedStream(string connectionId)
+        {
+        }
+
+        void _OnStoppedStream(string connectionId)
+        {
+            track = null;
         }
 
         protected override MediaStreamTrack CreateTrack()
         {
-            m_audioStream = Unity.WebRTC.Audio.CaptureStream();
-            return m_audioStream.GetTracks().First();
+            track = new AudioStreamTrack();
+            return track;
         }
 
-        private void OnAudioFilterRead(float[] data, int channels)
+        protected virtual void OnEnable()
         {
-            WebRTC.Audio.Update(data, channels);
+            if (audioSource == null)
+            {
+                Debug.LogFormat("AudioSource required");
+                return;
+            }
+
+            if (track != null)
+                track.Enabled = true;
+        }
+
+        protected virtual void OnDisable()
+        {
+            try
+            {
+                if (track != null)
+                    track.Enabled = false;
+            }
+            catch (InvalidOperationException)
+            {
+                track = null;
+            }
+
+            if (audioSource == null)
+            {
+                return;
+            }
+
+            audioSource.Stop();
+            audioSource.clip = null;
+        }
+
+        protected virtual void OnAudioFilterRead(float[] data, int channels)
+        {
+            try
+            {
+                track?.SetData(data, channels, _sampleRate);
+            }
+            catch (InvalidOperationException)
+            {
+                track = null;
+            }
         }
     }
 }

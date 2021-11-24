@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 
@@ -9,72 +9,22 @@ namespace Unity.RenderStreaming
     /// </summary>
     public class AudioStreamer : AudioStreamBase
     {
-        [SerializeField]
-        private AudioSource audioSource;
+        private MediaStream m_audioStream;
 
-        private AudioStreamTrack track;
-        int _sampleRate = 0;
-
-        public AudioSource AudioSource
+        void OnDisable()
         {
-            set
-            {
-                audioSource = value;
-                _sampleRate = audioSource.clip.samples;
-            }
-            get
-            {
-                return audioSource;
-            }
-        }
-
-        protected virtual void Awake()
-        {
-            if(audioSource != null && audioSource.clip != null)
-            {
-                _sampleRate = audioSource.clip.samples;
-            }
-            else
-            {
-                _sampleRate = AudioSettings.outputSampleRate;
-            }
+            WebRTC.Audio.Stop();
         }
 
         protected override MediaStreamTrack CreateTrack()
         {
-            track = new AudioStreamTrack();
-            return track;
-        }
-
-        protected virtual void OnEnable()
-        {
-            if (track != null)
-                track.Enabled = true;
-        }
-
-        protected virtual void OnDisable()
-        {
-            try
-            {
-                if (track != null)
-                    track.Enabled = false;
-            }
-            catch (InvalidOperationException)
-            {
-                track = null;
-            }
+            m_audioStream = Unity.WebRTC.Audio.CaptureStream();
+            return m_audioStream.GetTracks().First();
         }
 
         private void OnAudioFilterRead(float[] data, int channels)
         {
-            try
-            {
-                track?.SetData(data, channels, _sampleRate);
-            }
-            catch (InvalidOperationException)
-            {
-                track = null;
-            }
+            WebRTC.Audio.Update(data, channels);
         }
     }
 }

@@ -9,10 +9,13 @@ namespace Unity.RenderStreaming
     /// </summary>
     public class AudioStreamer : AudioStreamBase
     {
-        [SerializeField, Tooltip("Play microphone input (Required)")]
-        protected AudioSource audioSource;
-        protected AudioStreamTrack track;
+        /// <summary>
+    /// Attach AudioListerner or AudioSource
+    /// </summary>
+        [SerializeField]
+        private AudioSource audioSource;
 
+        private AudioStreamTrack track;
         int _sampleRate = 0;
 
         public AudioSource AudioSource
@@ -38,18 +41,6 @@ namespace Unity.RenderStreaming
             {
                 _sampleRate = AudioSettings.outputSampleRate;
             }
-
-            OnStartedStream += _OnStartedStream;
-            OnStoppedStream += _OnStoppedStream;
-        }
-
-        void _OnStartedStream(string connectionId)
-        {
-        }
-
-        void _OnStoppedStream(string connectionId)
-        {
-            track = null;
         }
 
         protected override MediaStreamTrack CreateTrack()
@@ -60,12 +51,6 @@ namespace Unity.RenderStreaming
 
         protected virtual void OnEnable()
         {
-            if (audioSource == null)
-            {
-                Debug.LogFormat("AudioSource required");
-                return;
-            }
-
             if (track != null)
                 track.Enabled = true;
         }
@@ -81,17 +66,9 @@ namespace Unity.RenderStreaming
             {
                 track = null;
             }
-
-            if (audioSource == null)
-            {
-                return;
-            }
-
-            audioSource.Stop();
-            audioSource.clip = null;
         }
 
-        protected virtual void OnAudioFilterRead(float[] data, int channels)
+        private void OnAudioFilterRead(float[] data, int channels)
         {
             try
             {

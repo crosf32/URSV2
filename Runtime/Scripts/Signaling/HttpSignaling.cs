@@ -153,9 +153,9 @@ namespace Unity.RenderStreaming.Signaling
                 {
                     HTTPGetConnections();
                     //ToDo workaround: The processing order needs to be determined by the time stamp
-                   // HTTPGetAnswers();
+                    // HTTPGetAnswers();
                     HTTPGetOffers();
-                    //HTTPGetCandidates();
+                    HTTPGetCandidates();
 
                     Thread.Sleep((int)(m_timeout * 1000));
                 }
